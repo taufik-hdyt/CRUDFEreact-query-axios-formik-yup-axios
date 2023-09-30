@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 
-export const useFetchProducts = () => {
+export const useFetchProducts = ({onError}) => {
   // ================ Versi Biasa =====================
   // const [products, setProducts] = useState([]);
   // const [isLoading, setIsloading] = useState(false);
@@ -23,13 +23,14 @@ export const useFetchProducts = () => {
   // }, []);
 
   //================== Versi React Query ========================
-  const { data: products, isLoading,refetch } = useQuery({
+  const { data: products, isLoading,refetch} = useQuery({
     queryFn: async () => {
       const dataProducts = await axiosInstance.get("/products");
       return dataProducts;
     },
     // refetchOnWindowFocus: false, // penggilan api setiap ganti windows atau focus windows dia akan melakukan get Api, secara default itu true
-    queryKey: ['fetch.products']
+    queryKey: ['fetch.products'],
+    onError
   });
 
   return {

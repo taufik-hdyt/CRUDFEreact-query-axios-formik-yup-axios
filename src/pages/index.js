@@ -1,9 +1,12 @@
 import { Inter } from "next/font/google";
 import {
+  Box,
   Button,
   Container,
   FormControl,
   FormLabel,
+  Grid,
+  HStack,
   Heading,
   Input,
   Spinner,
@@ -33,15 +36,25 @@ const inter = Inter({ subsets: ["latin"] });
 // React Query => Manage API calls
 
 export default function Home() {
+  const toast = useToast();
+
+  // FETCH / Get
   const {
     data: dataProducts,
     isLoading: loadingProducts,
     refetch: refetchProducts,
-  } = useFetchProducts();
+  } = useFetchProducts({
+    onError: ()=>{
+      toast({
+        title: 'Terjadi kesalah pahaman',
+        status: 'error'
+      })
+    }
+  });
 
   //  =========================================
 
-  const toast = useToast();
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -128,9 +141,10 @@ export default function Home() {
   };
 
   return (
-    <Container>
-      <Heading>Hello World</Heading>
-      <Table mt={6}>
+    <Box>
+      <Heading textAlign='center'>CRUD</Heading>
+      <Grid gridTemplateColumns='1fr 400px'  gap='8' px={6}>
+      <Table mt={6} >
         <Thead>
           <Tr>
             <Th>Id</Th>
@@ -161,8 +175,10 @@ export default function Home() {
       </Table>
 
       {/* ===== Create product using formik and reqct query */}
+      <Box >
+
       <form onSubmit={formik.handleSubmit}>
-        <Input name="id" value={formik.values.id} />
+        <Input visibility='hidden' name="id" value={formik.values.id} />
         <FormControl mt={4}>
           <FormLabel>Name</FormLabel>
           <Input
@@ -192,6 +208,8 @@ export default function Home() {
           {loadingAdd ? <Spinner /> + "Loading..." : "Submit"}
         </Button>
       </form>
-    </Container>
+      </Box>
+      </Grid>
+    </Box>
   );
 }
